@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-D4PrototypeApplication<d4_prototype>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.d4_prototype.d4_prototype.D4PrototypeApplication",
+            "projectName": "d4_prototype",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
