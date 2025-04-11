@@ -7,6 +7,6 @@ public class PrototypeController {
 
     @RequestMapping("/")
     public String getHello(){
-        return "Movie Theater Management System";
+        return "Movie Theater Management System!!";
     }
 }

@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "D4PrototypeApplication",
+            "request": "launch",
+            "mainClass": "d4_prototype.src.main.java.com.d4_prototype.d4_prototype.D4PrototypeApplication",
+            "projectName": "MovieTheaterMgmt_e411fd94"
+        },
+        {
+            "type": "java",
             "name": "Spring Boot-D4PrototypeApplication<d4_prototype>",
             "request": "launch",
             "cwd": "${workspaceFolder}",
