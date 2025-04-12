@@ -1,0 +1,74 @@
+{
+  "birdman": {
+    "title": "Birdman or (The Unexpected Virtue of Ignorance)",
+    "year": 2014,
+    "rating": "R",
+    "director": "Alejandro G. Iñárritu",
+    "genres": [
+      "Dark Comedy",
+      "Drama",
+      "Satire"
+    ],
+    "posterPath": "/posters/birdman.jpg"
+  },
+  "parasite": {
+    "title": "Parasite",
+    "year": 2019,
+    "rating": "R",
+    "director": "Bong Joon Ho",
+    "genres": [
+      "Dark Comedy",
+      "Korean Drama",
+      "Psychological Thriller"
+    ],
+    "posterPath": "/posters/parasite.jpg"
+  },
+  "the-crow": {
+    "title": "The Crow",
+    "year": 2024,
+    "rating": "R",
+    "director": "Rupert Sanders",
+    "genres": [
+      "Dark Comedy",
+      "Splatter Horror",
+      "Tragic Romance"
+    ],
+    "posterPath": "posters/crow.jpg"
+  },
+  "her": {
+    "title": "Her",
+    "year": 2013,
+    "rating": "R",
+    "director": "Spike Jonze",
+    "genres": [
+      "Drama",
+      "Romance",
+      "Sci-Fi"
+    ],
+    "posterPath": "/posters/her.jpg"
+  },
+  "mother": {
+    "title": "Mother!",
+    "year": 2017,
+    "rating": "R",
+    "director": "Darren Aronofsky",
+    "genres": [
+      "Drama",
+      "Horror",
+      "Mystery"
+    ],
+    "posterPath": "/posters/mother.jpg"
+  },
+  "the-wind-rises": {
+    "title": "The Wind Rises",
+    "year": 2013,
+    "director": "Hayao Miyazaki",
+    "rating": "PG-13",
+    "genres": [
+      "Anime",
+      "Period Drama",
+      "Slice of Life"
+    ],
+    "posterPath": "/posters/thewindrises.jpg"
+  }
+}
