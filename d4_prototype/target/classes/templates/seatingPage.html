@@ -214,21 +214,16 @@
         document.querySelectorAll(".seat.selected").forEach(seat => {
             seat.classList.remove("selected");
         });
-
-        window.location.href = "ticketsPage.html";
-    });
-
-    // Confirm button logic
-    document.querySelector(".btn.confirm").addEventListener("click", function () {
-        // Optional: You can validate that at least one seat is selected before proceeding
+    // Redirect on confirm
+    document.getElementById("confirmBtn").addEventListener("click", () => {
+        //check if any seats are selected before redirecting
         const selectedSeats = document.querySelectorAll(".seat.selected");
         if (selectedSeats.length === 0) {
-            alert("Please select at least one seat before proceeding.");
+            alert("Please select at least one seat.");
             return;
         }
 
-        // Redirect to checkout page
-        window.location.href = "checkoutPage.html";
+        window.location.href = "ticketsPage.html";
     });
 </script>
 </body>
