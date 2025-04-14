@@ -208,14 +208,14 @@
             seatingArea.appendChild(seat);
         }
     });
-
-    // Cancel button logic
+    const movieId = '[[${movieId}]]';
+        // Cancel button logic
     document.querySelector(".btn.cancel").addEventListener("click", function () {
         document.querySelectorAll(".seat.selected").forEach(seat => {
             seat.classList.remove("selected");
         });
 
-        window.location.href = "ticketsPage.html";
+        window.location.href = "/movies/" + movieId;
     });
 
     // Confirm button logic
@@ -228,7 +228,7 @@
         }
 
         // Redirect to checkout page
-        window.location.href = "checkoutPage.html";
+        window.location.href = "/checkout";
     });
 </script>
 </body>

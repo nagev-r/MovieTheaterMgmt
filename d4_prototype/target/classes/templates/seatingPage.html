@@ -208,22 +208,27 @@
             seatingArea.appendChild(seat);
         }
     });
-
-    // Cancel button logic
+    const movieId = '[[${movieId}]]';
+        // Cancel button logic
     document.querySelector(".btn.cancel").addEventListener("click", function () {
         document.querySelectorAll(".seat.selected").forEach(seat => {
             seat.classList.remove("selected");
         });
-    // Redirect on confirm
-    document.getElementById("confirmBtn").addEventListener("click", () => {
-        //check if any seats are selected before redirecting
+
+        window.location.href = "/movies/" + movieId;
+    });
+
+    // Confirm button logic
+    document.querySelector(".btn.confirm").addEventListener("click", function () {
+        // Optional: You can validate that at least one seat is selected before proceeding
         const selectedSeats = document.querySelectorAll(".seat.selected");
         if (selectedSeats.length === 0) {
-            alert("Please select at least one seat.");
+            alert("Please select at least one seat before proceeding.");
             return;
         }
 
-        window.location.href = "ticketsPage.html";
+        // Redirect to checkout page
+        window.location.href = "/checkout";
     });
 </script>
 </body>
