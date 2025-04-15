@@ -4,18 +4,25 @@
     <title>Movie Theater Homepage</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" th:href="@{/indexStyles.css}" />
-
-</head>
+</head> 
 <body>
-<h1>🎬 Welcome to the Movie Theater Management System</h1>
-<p>Now Showing...</p>
-<!-- Just dummy content for now...needs to show mock db movies and their pics -->
-<ul>
-    <li>Movie 1</li>
-    <li>Movie 2</li>
-    <li>Movie 3</li>
-</ul>
+<header>
+    <h1>🎬 Movie Theater Management System</h1>
+    <h2>Now Showing</h2>
+</header>
 
-
+<main class="movie-grid">
+    <div class="movie-card" th:each="entry : ${movies}">
+        <img class="poster" th:src="@{${entry.value.posterPath}}" alt="Poster"/>
+        <div class="movie-info">
+            <h3 th:text="${entry.value.title}"></h3>
+            <p><strong>Year:</strong> <span th:text="${entry.value.year}"></span></p>
+            <p><strong>Genres:</strong> <span th:text="${entry.value.genres}"></span></p>
+            <p><strong>Rating:</strong> <span th:text="${entry.value.rating}"></span></p>
+            <p><strong>Director:</strong> <span th:text="${entry.value.director}"></span></p>
+            <a class="buy-btn" th:href="@{'/movies/' + ${entry.key}}">Buy Tickets</a>
+        </div>
+    </div>
+</main>
 </body>
 </html>

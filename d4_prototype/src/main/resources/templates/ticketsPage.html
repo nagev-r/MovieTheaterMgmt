@@ -1,10 +1,130 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/ticketStyles.css}" />
     <title>Ticket Selection</title>
 </head>
 <body>
+    <header>
+        <h1>Ticket Selection</h1>
+        <a th:href="@{'/'}">Back</a>
+    </header>
+    <main>
+        <div class="poster-container">
+            <img th:src="@{${path}}" alt="Poster"/>
+        </div>
+    
+        <div class="content-container">
+            <div>
 
+                <div class="showtime-row">
+                    <h2 th:text="${title}"></h2>
+                
+                    <select id="showtime-select" class="showtime-select">
+                        <option>Select Showtime</option>
+                        <option th:each="showtime : ${showtimes}" th:text="${showtime}"></option>         
+                    </select>
+                </div>
+
+                <p th:text="${genres}"></p>
+            </div>
+
+    
+            <div class="ticket-section">
+                <h2>Adult</h2>
+                <button class="adult-decrease">-</button>
+                <span id="adult-count">0</span>
+                <button class="adult-increase">+</button>
+            </div>
+    
+            <div class="ticket-section">
+                <h2>Child</h2>
+                <button class="child-decrease">-</button>
+                <span id="child-count">0</span>
+                <button class="child-increase">+</button>
+            </div>
+    
+            <div class="ticket-section">
+                <h2>Senior</h2>
+                <button class="senior-decrease">-</button>
+                <span id="senior-count">0</span>
+                <button class="senior-increase">+</button>
+            </div>
+    
+            <div class="confirm-section">
+                <p>Confirm ticket selection and reserve seats:</p>
+                <button th:href="@{'/'}" class="select-seats">Select Seats ></button>
+            </div>
+        </div>
+    </main>
+    <script>
+        const adultIncrease = document.querySelector('.adult-increase');
+        const adultDecrease = document.querySelector('.adult-decrease');
+
+        adultIncrease.addEventListener('click', () => {
+            let count = parseInt(document.getElementById("adult-count").textContent);
+            document.getElementById("adult-count").textContent = count + 1;
+        });
+
+        adultDecrease.addEventListener('click', () => {
+            let count = parseInt(document.getElementById("adult-count").textContent);
+            if (count > 0) {
+                document.getElementById("adult-count").textContent = count - 1;
+            }
+        });
+
+        
+        const childIncrease = document.querySelector('.child-increase');
+        const childDecrease = document.querySelector('.child-decrease');
+
+        childIncrease.addEventListener('click', () => {
+            let count = parseInt(document.getElementById("child-count").textContent);
+            document.getElementById("child-count").textContent = count + 1;
+        });
+
+        childDecrease.addEventListener('click', () => {
+            let count = parseInt(document.getElementById("child-count").textContent);
+            if (count > 0) {
+                document.getElementById("child-count").textContent = count - 1;
+            }
+        });
+
+        const seniorIncrease = document.querySelector('.senior-increase');
+        const seniorDecrease = document.querySelector('.senior-decrease');
+
+        seniorIncrease.addEventListener('click', () => {
+            let count = parseInt(document.getElementById("senior-count").textContent);
+            document.getElementById("senior-count").textContent = count + 1;
+        });
+
+        seniorDecrease.addEventListener('click', () => {
+            let count = parseInt(document.getElementById("senior-count").textContent);
+            if (count > 0) {
+                document.getElementById("senior-count").textContent = count - 1;
+            }
+        });
+
+        //showtime selection
+
+        let selectedShowtime = '';
+
+        const showtimeSelect = document.getElementById("showtime-select");
+
+        showtimeSelect.addEventListener("change", (e) => {
+            selectedShowtime = e.target.value;
+            console.log("Selected showtime:", selectedShowtime);
+        });
+
+        document.querySelector(".select-seats").addEventListener("click", () => {
+            if (!selectedShowtime) {
+                alert("Please select a showtime before continuing.");
+                return;
+            }
+
+            window.location.href = window.location.href + `/seats`;
+        });
+
+    </script>
 </body>
-</html>
+</html> 
