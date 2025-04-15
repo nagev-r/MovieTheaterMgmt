@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Checkout</title>
@@ -26,17 +26,6 @@
         .left, .right {
             width: 48%;
             padding: 10px;
-        }
-
-        .payment-methods {
-            margin: 20px 0;
-        }
-
-        .payment-methods button {
-            margin-right: 10px;
-            padding: 10px 20px;
-            font-size: 14px;
-            cursor: pointer;
         }
 
         .divider {
@@ -86,7 +75,8 @@
 
         .order-summary {
             border-left: 1px solid #ccc;
-            padding-left: 20px;
+            padding-left: 40px; /* More spacing on the left */
+            margin-left: 20px;   /* Push the border further to the right */
         }
 
         .summary-item {
@@ -108,19 +98,16 @@
 </head>
 <body>
     <h1>Checkout</h1>
-    <a href="#">&lt; Back</a>
+    
+    <!-- Back button with Thymeleaf routing -->
+    <a th:href="@{/movies/{movieId}/seats(id=${movieId})}">&lt; Back</a>
 
     <div class="container">
         <div class="left">
-            <h2>Select Payment Method</h2>
-            <div class="payment-methods">
-                <button><img src="https://developer.apple.com/design/human-interface-guidelines/apple-pay/images/apple-pay-mark-on-dark.svg" alt="Apple Pay" style="height:20px;"></button>
-                <button><img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg" alt="PayPal" style="height:20px;"></button>
-            </div>
+            <h2>Enter Payment Information</h2>
 
-            <div class="divider">OR</div>
-
-            <form id="checkout-form">
+            <!-- Pay Now form -->
+            <form id="checkout-form" th:action="@{/complete}" method="get">
                 <div class="form-group">
                     <input type="text" placeholder="First Name" id="first-name">
                 </div>
@@ -147,6 +134,7 @@
 
         <div class="right order-summary">
             <h2>Order Summary</h2>
+            <!-- Your order details -->
             <div class="summary-item">
                 <span>DUNE 3/11 8:00 pm - Adult x 1</span>
                 <span>$26.99</span>
@@ -176,7 +164,6 @@
 
     <script>
         document.getElementById('checkout-form').addEventListener('submit', function(event) {
-            event.preventDefault();
             const fields = ['first-name', 'last-name', 'email', 'card-name', 'card-number', 'exp-date', 'cvv'];
             let allFilled = true;
             fields.forEach(id => {
@@ -186,10 +173,11 @@
 
             const errorMsg = document.getElementById('error-message');
             if (!allFilled) {
+                event.preventDefault(); // prevent navigation to /complete
                 errorMsg.style.display = 'block';
             } else {
                 errorMsg.style.display = 'none';
-                alert('Payment submitted successfully!'); // Simulate successful submission
+                // allow form to submit to /complete
             }
         });
     </script>
