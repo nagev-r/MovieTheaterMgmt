@@ -1,10 +1,235 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Seating Page</title>
+    <meta charset="UTF-8" />
+    <title>Seat Selection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #fff;
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .screen {
+            margin: 0 auto 30px;
+            width: 60%;
+            border-top: 5px solid #0fd6a0;
+            border-radius: 50% / 100%;
+            padding-top: 10px;
+            font-weight: bold;
+            color: #0fd6a0;
+        }
+
+        .seating-container {
+            display: inline-block;
+        }
+
+        .column-labels {
+            display: grid;
+            grid-template-columns: 40px repeat(10, 50px);
+            gap: 10px 15px;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .column-labels div {
+            font-weight: bold;
+        }
+
+        .seat-layout {
+            display: grid;
+            grid-template-columns: 40px repeat(10, 50px);
+            gap: 25px 15px;
+            justify-content: center;
+        }
+
+        .row-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .seat {
+            position: relative;
+            width: 40px;
+            height: 25px;
+            background-color: #0fd6a0;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px #0bb38f;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+
+        .seat::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            bottom: -10px;
+            width: 30px;
+            height: 10px;
+            background-color: inherit;
+            border-radius: 3px;
+            box-shadow: 0 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .seat.selected {
+            background-color: #111;
+            box-shadow: 0 4px #000;
+        }
+
+        .seat.selected::after {
+            background-color: #111;
+        }
+
+        .seat.reserved {
+            background-color: #c0392b;
+            cursor: not-allowed;
+            box-shadow: 0 4px #992d22;
+        }
+
+        .seat.reserved::after {
+            background-color: #c0392b;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+        }
+
+        .available { background-color: #0fd6a0; }
+        .reserved  { background-color: #c0392b; }
+        .selected  { background-color: #111; }
+
+        .buttons {
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 10px;
+            border: 1px solid #333;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .confirm {
+            background-color: #b2ebf2;
+        }
+
+        .cancel {
+            background-color: #fdd;
+        }
+    </style>
 </head>
 <body>
+<h1>Seat Selection</h1>
+<div class="screen">Screen</div>
 
+<div class="seating-container">
+    <div class="column-labels">
+        <div></div>
+        <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div>
+        <div>6</div><div>7</div><div>8</div><div>9</div><div>10</div>
+    </div>
+
+    <div class="seat-layout" id="seatingArea">
+        <!-- JS injects rows here -->
+    </div>
+</div>
+
+<div class="legend">
+    <div class="legend-item"><div class="legend-color available"></div>Available</div>
+    <div class="legend-item"><div class="legend-color reserved"></div>Reserved</div>
+    <div class="legend-item"><div class="legend-color selected"></div>Selected</div>
+</div>
+
+<div class="buttons">
+    <button class="btn confirm">Confirm Seating</button>
+    <button class="btn cancel">Cancel</button>
+</div>
+
+<script>
+    const seatingArea = document.getElementById("seatingArea");
+
+    const rows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']; // 9 rows
+    const cols = 10; // 10 seats per row
+
+    rows.forEach(row => {
+        const rowLabel = document.createElement("div");
+        rowLabel.classList.add("row-label");
+        rowLabel.textContent = row;
+        seatingArea.appendChild(rowLabel);
+
+        for (let i = 1; i <= cols; i++) {
+            const seat = document.createElement("div");
+
+            // Row A: seats 1, 2, 9, 10 only
+            if (row === 'A' && !(i === 1 || i === 2 || i === 9 || i === 10)) {
+                seatingArea.appendChild(document.createElement("div"));
+                continue;
+            }
+
+            // Row B: seats 1, 2, 3, 5, 6, 8, 9, 10 only
+            if (row === 'B' && !(i === 1 || i === 2 || i === 3 || i === 5 || i === 6 || i === 8 || i === 9 || i === 10)) {
+                seatingArea.appendChild(document.createElement("div"));
+                continue;
+            }
+
+            seat.classList.add("seat");
+            seat.dataset.seatId = `${row}${i}`;
+
+            seat.addEventListener("click", function () {
+                if (seat.classList.contains("reserved")) return;
+                seat.classList.toggle("selected");
+            });
+
+            seatingArea.appendChild(seat);
+        }
+    });
+    const movieId = '[[${movieId}]]';
+        // Cancel button logic
+    document.querySelector(".btn.cancel").addEventListener("click", function () {
+        document.querySelectorAll(".seat.selected").forEach(seat => {
+            seat.classList.remove("selected");
+        });
+
+        window.location.href = "/movies/" + movieId;
+    });
+
+    // Confirm button logic
+    document.querySelector(".btn.confirm").addEventListener("click", function () {
+        // Optional: You can validate that at least one seat is selected before proceeding
+        const selectedSeats = document.querySelectorAll(".seat.selected");
+        if (selectedSeats.length === 0) {
+            alert("Please select at least one seat before proceeding.");
+            return;
+        }
+
+        // Redirect to checkout page
+        window.location.href = "/checkout";
+    });
+</script>
 </body>
 </html>
