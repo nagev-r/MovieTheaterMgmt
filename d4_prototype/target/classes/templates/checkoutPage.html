@@ -75,8 +75,8 @@
 
         .order-summary {
             border-left: 1px solid #ccc;
-            padding-left: 40px; /* More spacing on the left */
-            margin-left: 20px;   /* Push the border further to the right */
+            padding-left: 40px;
+            margin-left: 20px;
         }
 
         .summary-item {
@@ -98,15 +98,13 @@
 </head>
 <body>
     <h1>Checkout</h1>
-    
-    <!-- Back button with Thymeleaf routing -->
+
     <a th:href="@{/movies/{movieId}/seats(id=${movieId})}">&lt; Back</a>
 
     <div class="container">
         <div class="left">
             <h2>Enter Payment Information</h2>
 
-            <!-- Pay Now form -->
             <form id="checkout-form" th:action="@{/complete}" method="get">
                 <div class="form-group">
                     <input type="text" placeholder="First Name" id="first-name">
@@ -134,35 +132,12 @@
 
         <div class="right order-summary">
             <h2>Order Summary</h2>
-            <!-- Your order details -->
-            <div class="summary-item">
-                <span>DUNE 3/11 8:00 pm - Adult x 1</span>
-                <span>$26.99</span>
-            </div>
-            <div class="summary-item">
-                <span>DUNE 3/11 8:00 pm - Senior x 1</span>
-                <span>$16.99</span>
-            </div>
-            <div class="summary-item">
-                <span>DUNE 3/11 8:00 pm - Child x 1</span>
-                <span>$16.99</span>
-            </div>
-            <div class="summary-item">
-                <span>Subtotal</span>
-                <span>$60.97</span>
-            </div>
-            <div class="summary-item">
-                <span>Tax</span>
-                <span>$6.10</span>
-            </div>
-            <div class="summary-item summary-total">
-                <span>Total</span>
-                <span>$67.07</span>
-            </div>
+            <!-- Order summary will be injected here via JavaScript -->
         </div>
     </div>
 
     <script>
+        // Validate form and optionally clear localStorage
         document.getElementById('checkout-form').addEventListener('submit', function(event) {
             const fields = ['first-name', 'last-name', 'email', 'card-name', 'card-number', 'exp-date', 'cvv'];
             let allFilled = true;
@@ -173,13 +148,51 @@
 
             const errorMsg = document.getElementById('error-message');
             if (!allFilled) {
-                event.preventDefault(); // prevent navigation to /complete
+                event.preventDefault();
                 errorMsg.style.display = 'block';
             } else {
                 errorMsg.style.display = 'none';
-                // allow form to submit to /complete
+                localStorage.removeItem('ticketSelection'); // ✅ clear after successful submission
             }
         });
+
+        // ✅ Render order summary dynamically from localStorage
+        const orderSummaryContainer = document.querySelector('.order-summary');
+        const storedData = localStorage.getItem('ticketSelection');
+
+        if (storedData) {
+            const { movieTitle, showtime, tickets } = JSON.parse(storedData);
+
+            const summaryHTML = [];
+            let subtotal = 0;
+
+            for (const type in tickets) {
+                const ticket = tickets[type];
+                if (ticket.count > 0) {
+                    const label = type.charAt(0).toUpperCase() + type.slice(1);
+                    const linePrice = (ticket.price * ticket.count);
+                    subtotal += linePrice;
+
+                    summaryHTML.push(`
+                        <div class="summary-item">
+                            <span>${movieTitle} ${showtime} - ${label} x ${ticket.count}</span>
+                            <span>$${linePrice.toFixed(2)}</span>
+                        </div>
+                    `);
+                }
+            }
+
+            const tax = subtotal * 0.10;
+            const total = subtotal + tax;
+
+            summaryHTML.push(`
+                <div class="summary-item"><span>Subtotal</span><span>$${subtotal.toFixed(2)}</span></div>
+                <div class="summary-item"><span>Tax</span><span>$${tax.toFixed(2)}</span></div>
+                <div class="summary-item summary-total"><span>Total</span><span>$${total.toFixed(2)}</span></div>
+            `);
+
+            orderSummaryContainer.innerHTML = `<h2>Order Summary</h2>` + summaryHTML.join('');
+        }
     </script>
 </body>
 </html>

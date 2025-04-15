@@ -17,20 +17,16 @@
     
         <div class="content-container">
             <div>
-
                 <div class="showtime-row">
                     <h2 th:text="${title}"></h2>
-                
                     <select id="showtime-select" class="showtime-select">
                         <option>Select Showtime</option>
                         <option th:each="showtime : ${showtimes}" th:text="${showtime}"></option>         
                     </select>
                 </div>
-
                 <p th:text="${genres}"></p>
             </div>
 
-    
             <div class="ticket-section">
                 <h2>Adult</h2>
                 <button class="adult-decrease">-</button>
@@ -54,77 +50,61 @@
     
             <div class="confirm-section">
                 <p>Confirm ticket selection and reserve seats:</p>
-                <button th:href="@{'/'}" class="select-seats">Select Seats ></button>
+                <button class="select-seats">Select Seats ></button>
             </div>
         </div>
     </main>
+    
     <script>
-        const adultIncrease = document.querySelector('.adult-increase');
-        const adultDecrease = document.querySelector('.adult-decrease');
+        // Ticket counters
+        const updateCount = (type, delta) => {
+            const countSpan = document.getElementById(`${type}-count`);
+            let count = parseInt(countSpan.textContent);
+            count = Math.max(0, count + delta);
+            countSpan.textContent = count;
+        };
 
-        adultIncrease.addEventListener('click', () => {
-            let count = parseInt(document.getElementById("adult-count").textContent);
-            document.getElementById("adult-count").textContent = count + 1;
-        });
+        document.querySelector('.adult-increase').addEventListener('click', () => updateCount('adult', 1));
+        document.querySelector('.adult-decrease').addEventListener('click', () => updateCount('adult', -1));
+        document.querySelector('.child-increase').addEventListener('click', () => updateCount('child', 1));
+        document.querySelector('.child-decrease').addEventListener('click', () => updateCount('child', -1));
+        document.querySelector('.senior-increase').addEventListener('click', () => updateCount('senior', 1));
+        document.querySelector('.senior-decrease').addEventListener('click', () => updateCount('senior', -1));
 
-        adultDecrease.addEventListener('click', () => {
-            let count = parseInt(document.getElementById("adult-count").textContent);
-            if (count > 0) {
-                document.getElementById("adult-count").textContent = count - 1;
-            }
-        });
-
-        
-        const childIncrease = document.querySelector('.child-increase');
-        const childDecrease = document.querySelector('.child-decrease');
-
-        childIncrease.addEventListener('click', () => {
-            let count = parseInt(document.getElementById("child-count").textContent);
-            document.getElementById("child-count").textContent = count + 1;
-        });
-
-        childDecrease.addEventListener('click', () => {
-            let count = parseInt(document.getElementById("child-count").textContent);
-            if (count > 0) {
-                document.getElementById("child-count").textContent = count - 1;
-            }
-        });
-
-        const seniorIncrease = document.querySelector('.senior-increase');
-        const seniorDecrease = document.querySelector('.senior-decrease');
-
-        seniorIncrease.addEventListener('click', () => {
-            let count = parseInt(document.getElementById("senior-count").textContent);
-            document.getElementById("senior-count").textContent = count + 1;
-        });
-
-        seniorDecrease.addEventListener('click', () => {
-            let count = parseInt(document.getElementById("senior-count").textContent);
-            if (count > 0) {
-                document.getElementById("senior-count").textContent = count - 1;
-            }
-        });
-
-        //showtime selection
-
+        // Showtime selection
         let selectedShowtime = '';
-
         const showtimeSelect = document.getElementById("showtime-select");
-
         showtimeSelect.addEventListener("change", (e) => {
             selectedShowtime = e.target.value;
             console.log("Selected showtime:", selectedShowtime);
         });
 
+        // Save to localStorage and redirect
         document.querySelector(".select-seats").addEventListener("click", () => {
-            if (!selectedShowtime) {
+            if (!selectedShowtime || selectedShowtime === "Select Showtime") {
                 alert("Please select a showtime before continuing.");
                 return;
             }
 
-            window.location.href = window.location.href + `/seats`;
-        });
+            const title = document.querySelector("h2").textContent;
+            const adultCount = parseInt(document.getElementById("adult-count").textContent);
+            const childCount = parseInt(document.getElementById("child-count").textContent);
+            const seniorCount = parseInt(document.getElementById("senior-count").textContent);
 
+            const ticketData = {
+                movieTitle: title,
+                showtime: selectedShowtime,
+                tickets: {
+                    adult: { count: adultCount, price: 26.99 },
+                    child: { count: childCount, price: 16.99 },
+                    senior: { count: seniorCount, price: 16.99 }
+                }
+            };
+
+            localStorage.setItem('ticketSelection', JSON.stringify(ticketData));
+
+            window.location.href = '/movies/{movieId}/seats'; 
+        });
     </script>
 </body>
-</html> 
+</html>
