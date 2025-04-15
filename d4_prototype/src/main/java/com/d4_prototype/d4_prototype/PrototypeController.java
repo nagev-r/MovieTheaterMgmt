@@ -24,7 +24,15 @@ public class PrototypeController {
         if (movie == null) {
             return "404"; // handle error
         }
-        model.addAttribute("movie", movie);
+        /*
+            Passing in a movie object didn't work for me, need to parse out the attributes and pass it in
+            like this
+        */
+        model.addAttribute("path", movie.getPosterPath());
+        model.addAttribute("title", movie.getTitle());
+        model.addAttribute("genres", movie.getGenres());
+        model.addAttribute("remainingSeats", movie.getRemainingSeats());
+        model.addAttribute("showtimes", movie.getShowtimes());
         return "ticketsPage"; // templates/ticketsPage.html
     }
 
