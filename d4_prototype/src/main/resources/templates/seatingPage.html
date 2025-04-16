@@ -155,7 +155,7 @@
     </div>
 
     <div class="seat-layout" id="seatingArea">
-        <!-- JS injects rows here -->
+        <!-- JavaScript injects seat rows -->
     </div>
 </div>
 
@@ -173,8 +173,32 @@
 <script>
     const seatingArea = document.getElementById("seatingArea");
 
-    const rows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']; // 9 rows
-    const cols = 10; // 10 seats per row
+    const rows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
+    const cols = 10;
+
+    const rawMovieId = localStorage.getItem("selectedMovieId") || "default-movie"; // fallback in case it's missing
+
+    const movieId = rawMovieId.toLowerCase().replace(/\s+/g, '-'); // e.g., "Birdman" → "birdman"
+    const reservedSeatsKey = `reservedSeats_${movieId}`;
+
+    // Optional: Reset all movie seat data once per session (per session browser tab)
+    if (!sessionStorage.getItem("seatsResetDone")) {
+        Object.keys(localStorage).forEach(key => {
+            if (key.startsWith("reservedSeats_")) {
+                localStorage.removeItem(key);
+            }
+        });
+        sessionStorage.setItem("seatsResetDone", "true");
+    }
+
+    const reservedSeats = JSON.parse(localStorage.getItem(reservedSeatsKey)) || [];
+
+    const ticketData = JSON.parse(localStorage.getItem("ticketSelection")) || null;
+    const allowedSeats = ticketData
+        ? ticketData.tickets.adult.count + ticketData.tickets.child.count + ticketData.tickets.senior.count
+        : 0;
+
+    let currentSelected = 0;
 
     rows.forEach(row => {
         const rowLabel = document.createElement("div");
@@ -183,53 +207,71 @@
         seatingArea.appendChild(rowLabel);
 
         for (let i = 1; i <= cols; i++) {
+            const seatId = `${row}${i}`;
             const seat = document.createElement("div");
 
-            // Row A: seats 1, 2, 9, 10 only
-            if (row === 'A' && !(i === 1 || i === 2 || i === 9 || i === 10)) {
-                seatingArea.appendChild(document.createElement("div"));
-                continue;
-            }
+            const hideA = row === 'A' && ![1, 2, 9, 10].includes(i);
+            const hideB = row === 'B' && ![1, 2, 3, 5, 6, 8, 9, 10].includes(i);
 
-            // Row B: seats 1, 2, 3, 5, 6, 8, 9, 10 only
-            if (row === 'B' && !(i === 1 || i === 2 || i === 3 || i === 5 || i === 6 || i === 8 || i === 9 || i === 10)) {
+            if (hideA || hideB) {
                 seatingArea.appendChild(document.createElement("div"));
                 continue;
             }
 
             seat.classList.add("seat");
-            seat.dataset.seatId = `${row}${i}`;
+            seat.dataset.seatId = seatId;
+
+            if (reservedSeats.includes(seatId)) {
+                seat.classList.add("reserved");
+            }
 
             seat.addEventListener("click", function () {
                 if (seat.classList.contains("reserved")) return;
-                seat.classList.toggle("selected");
+
+                if (!seat.classList.contains("selected")) {
+                    if (currentSelected >= allowedSeats) {
+                        alert(`You can only select ${allowedSeats} seat${allowedSeats > 1 ? 's' : ''}.`);
+                        return;
+                    }
+                    seat.classList.add("selected");
+                    currentSelected++;
+                } else {
+                    seat.classList.remove("selected");
+                    currentSelected--;
+                }
             });
 
             seatingArea.appendChild(seat);
         }
     });
-    const movieId = '[[${movieId}]]';
-        // Cancel button logic
-    document.querySelector(".btn.cancel").addEventListener("click", function () {
+
+    document.querySelector(".btn.cancel").addEventListener("click", () => {
         document.querySelectorAll(".seat.selected").forEach(seat => {
             seat.classList.remove("selected");
         });
-
         window.location.href = "/movies/" + movieId;
     });
 
-    // Confirm button logic
-    document.querySelector(".btn.confirm").addEventListener("click", function () {
-        // Optional: You can validate that at least one seat is selected before proceeding
+    document.querySelector(".btn.confirm").addEventListener("click", () => {
         const selectedSeats = document.querySelectorAll(".seat.selected");
+
         if (selectedSeats.length === 0) {
             alert("Please select at least one seat before proceeding.");
             return;
         }
 
-        // Redirect to checkout page
+        const selectedIds = Array.from(selectedSeats).map(seat => seat.dataset.seatId);
+        const updatedReservedSeats = [...new Set([...reservedSeats, ...selectedIds])];
+
+        localStorage.setItem(reservedSeatsKey, JSON.stringify(updatedReservedSeats));
+        localStorage.setItem("selectedSeats", JSON.stringify(selectedIds));
+
         window.location.href = "/checkout";
     });
 </script>
+
+
+
+
 </body>
 </html>

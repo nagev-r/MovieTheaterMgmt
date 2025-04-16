@@ -1,7 +1,6 @@
 package com.d4_prototype.d4_prototype;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,4 +45,10 @@ public class PrototypeController {
     public String getCheckout(Model model) {
         return "checkoutPage";
     }
+
+    @GetMapping("/complete")
+        public String getCompletePage(Model model) {
+        return "complete"; 
+    }
+
 }
