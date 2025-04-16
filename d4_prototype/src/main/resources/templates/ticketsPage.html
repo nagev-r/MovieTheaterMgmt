@@ -14,7 +14,7 @@
         <div class="poster-container">
             <img th:src="@{${path}}" alt="Poster"/>
         </div>
-    
+
         <div class="content-container">
             <div>
                 <div class="showtime-row">
@@ -33,29 +33,39 @@
                 <span id="adult-count">0</span>
                 <button class="adult-increase">+</button>
             </div>
-    
+
             <div class="ticket-section">
                 <h2>Child</h2>
                 <button class="child-decrease">-</button>
                 <span id="child-count">0</span>
                 <button class="child-increase">+</button>
             </div>
-    
+
             <div class="ticket-section">
                 <h2>Senior</h2>
                 <button class="senior-decrease">-</button>
                 <span id="senior-count">0</span>
                 <button class="senior-increase">+</button>
             </div>
-    
+
             <div class="confirm-section">
                 <p>Confirm ticket selection and reserve seats:</p>
                 <button class="select-seats">Select Seats ></button>
             </div>
         </div>
     </main>
-    
+
     <script>
+        // ✅ Only clear reserved seats once per browser session
+        if (!sessionStorage.getItem("seatsResetDone")) {
+            Object.keys(localStorage).forEach(key => {
+                if (key.startsWith("reservedSeats_")) {
+                    localStorage.removeItem(key);
+                }
+            });
+            sessionStorage.setItem("seatsResetDone", "true");
+        }
+
         // Ticket counters
         const updateCount = (type, delta) => {
             const countSpan = document.getElementById(`${type}-count`);
@@ -87,6 +97,9 @@
             }
 
             const title = document.querySelector("h2").textContent;
+            const movieId = title.toLowerCase().replace(/\s+/g, '-'); // ✅ format: "Birdman" → "birdman"
+            localStorage.setItem("selectedMovieId", title);           // ✅ save title as identifier
+
             const adultCount = parseInt(document.getElementById("adult-count").textContent);
             const childCount = parseInt(document.getElementById("child-count").textContent);
             const seniorCount = parseInt(document.getElementById("senior-count").textContent);
@@ -103,7 +116,8 @@
 
             localStorage.setItem('ticketSelection', JSON.stringify(ticketData));
 
-            window.location.href = '/movies/{movieId}/seats'; 
+            // ✅ redirect to movie-specific seats page
+            window.location.href = `/movies/${movieId}/seats`;
         });
     </script>
 </body>

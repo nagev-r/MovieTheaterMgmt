@@ -155,7 +155,7 @@
     </div>
 
     <div class="seat-layout" id="seatingArea">
-        <!-- JS injects rows here -->
+        <!-- JavaScript injects seat rows -->
     </div>
 </div>
 
@@ -176,10 +176,24 @@
     const rows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
     const cols = 10;
 
-    // ⏪ Get ticket info and previously reserved seats from localStorage
-    const ticketData = JSON.parse(localStorage.getItem("ticketSelection")) || null;
-    const reservedSeats = JSON.parse(localStorage.getItem("reservedSeats")) || [];
+    const rawMovieId = localStorage.getItem("selectedMovieId") || "default-movie"; // fallback in case it's missing
 
+    const movieId = rawMovieId.toLowerCase().replace(/\s+/g, '-'); // e.g., "Birdman" → "birdman"
+    const reservedSeatsKey = `reservedSeats_${movieId}`;
+
+    // Optional: Reset all movie seat data once per session (per session browser tab)
+    if (!sessionStorage.getItem("seatsResetDone")) {
+        Object.keys(localStorage).forEach(key => {
+            if (key.startsWith("reservedSeats_")) {
+                localStorage.removeItem(key);
+            }
+        });
+        sessionStorage.setItem("seatsResetDone", "true");
+    }
+
+    const reservedSeats = JSON.parse(localStorage.getItem(reservedSeatsKey)) || [];
+
+    const ticketData = JSON.parse(localStorage.getItem("ticketSelection")) || null;
     const allowedSeats = ticketData
         ? ticketData.tickets.adult.count + ticketData.tickets.child.count + ticketData.tickets.senior.count
         : 0;
@@ -196,13 +210,10 @@
             const seatId = `${row}${i}`;
             const seat = document.createElement("div");
 
-            // Seat visibility rules
-            if (row === 'A' && !(i === 1 || i === 2 || i === 9 || i === 10)) {
-                seatingArea.appendChild(document.createElement("div"));
-                continue;
-            }
+            const hideA = row === 'A' && ![1, 2, 9, 10].includes(i);
+            const hideB = row === 'B' && ![1, 2, 3, 5, 6, 8, 9, 10].includes(i);
 
-            if (row === 'B' && !(i === 1 || i === 2 || i === 3 || i === 5 || i === 6 || i === 8 || i === 9 || i === 10)) {
+            if (hideA || hideB) {
                 seatingArea.appendChild(document.createElement("div"));
                 continue;
             }
@@ -210,7 +221,6 @@
             seat.classList.add("seat");
             seat.dataset.seatId = seatId;
 
-            // 🔒 Mark reserved seats as unclickable
             if (reservedSeats.includes(seatId)) {
                 seat.classList.add("reserved");
             }
@@ -235,17 +245,14 @@
         }
     });
 
-    const movieId = '[[${movieId}]]';
-
-    document.querySelector(".btn.cancel").addEventListener("click", function () {
+    document.querySelector(".btn.cancel").addEventListener("click", () => {
         document.querySelectorAll(".seat.selected").forEach(seat => {
             seat.classList.remove("selected");
         });
-
         window.location.href = "/movies/" + movieId;
     });
 
-    document.querySelector(".btn.confirm").addEventListener("click", function () {
+    document.querySelector(".btn.confirm").addEventListener("click", () => {
         const selectedSeats = document.querySelectorAll(".seat.selected");
 
         if (selectedSeats.length === 0) {
@@ -253,17 +260,17 @@
             return;
         }
 
-        // ✅ Save the selected seats to reservedSeats in localStorage
         const selectedIds = Array.from(selectedSeats).map(seat => seat.dataset.seatId);
-        const updatedReservedSeats = [...new Set([...reservedSeats, ...selectedIds])]; // avoid duplicates
+        const updatedReservedSeats = [...new Set([...reservedSeats, ...selectedIds])];
 
-        localStorage.setItem("reservedSeats", JSON.stringify(updatedReservedSeats));
-        localStorage.setItem("selectedSeats", JSON.stringify(selectedIds)); // Optional, for checkout page
+        localStorage.setItem(reservedSeatsKey, JSON.stringify(updatedReservedSeats));
+        localStorage.setItem("selectedSeats", JSON.stringify(selectedIds));
 
-        // Redirect
         window.location.href = "/checkout";
     });
 </script>
+
+
 
 
 </body>
