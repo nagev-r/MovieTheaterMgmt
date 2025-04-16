@@ -10,10 +10,15 @@ When the application would work when it is on the web.
 When opened the first thing a user would see is the page filled with a list of different movies to select from.
 A user would then select a movie of their choice 
 From the movie selected they would then choose a time they would like to attend
-This leads them to the checkout page which prompts them to pay.,
+This leads them to the checkout page which prompts them to pay.
 
- 1.	The browser loads index.html.
- 2.	JavaScript sends a request to /tickets/movies.
- 3. Shows movie titles and times on site. 
- 4.	The dropdowns on the page are populated with movie titles and showtimes.
- 5.	When the user clicks "Book Ticket", a  request is sent to /tickets/book.
+### Project Structure
+1. Controller: Manages the HTTP requests and responses.
+2. Model: Represents the Movie and Showtime data.
+3. View (Thymeleaf templates): Displays movie information, showtimes, and ticket booking form.
+
+### How It Works
+1. Homepage: Displays a list of movies with their details.
+2. Select Movie: Click on a movie to see the available showtimes.
+3. Ticket Purchase: Choose a showtime and select the number of tickets.
+4. Confirmation: Confirm your booking with the selected tickets.
