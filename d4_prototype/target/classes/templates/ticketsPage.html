@@ -56,7 +56,7 @@
     </main>
 
     <script>
-        // ✅ Only clear reserved seats once per browser session
+        //Only clear reserved seats once per browser session
         if (!sessionStorage.getItem("seatsResetDone")) {
             Object.keys(localStorage).forEach(key => {
                 if (key.startsWith("reservedSeats_")) {
@@ -97,8 +97,8 @@
             }
 
             const title = document.querySelector("h2").textContent;
-            const movieId = title.toLowerCase().replace(/\s+/g, '-'); // ✅ format: "Birdman" → "birdman"
-            localStorage.setItem("selectedMovieId", title);           // ✅ save title as identifier
+            const movieId = title.toLowerCase().replace(/\s+/g, '-'); // format: "Birdman" → "birdman"
+            localStorage.setItem("selectedMovieId", title);           // save title as identifier
 
             const adultCount = parseInt(document.getElementById("adult-count").textContent);
             const childCount = parseInt(document.getElementById("child-count").textContent);
@@ -116,7 +116,7 @@
 
             localStorage.setItem('ticketSelection', JSON.stringify(ticketData));
 
-            // ✅ redirect to movie-specific seats page
+            //redirect to movie-specific seats page
             window.location.href = `/movies/${movieId}/seats`;
         });
     </script>
