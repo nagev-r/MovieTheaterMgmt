@@ -3,7 +3,7 @@
 ## This project is a database management system that will be used to keep track of movie tickets sold and seats available. 
 The aim with the system is to create a simple to use and accurate storage system of all the movies that are being currently shown as well as how many seats are available in that specific theater.
 
-We created a springboard application that handles the backend for our movie service system. The movie file defines the structure for what movies are currently playing and in the system. 
+We created a SpringBoot application that handles the backend for our movie service system. The movie file defines the structure for what movies are currently playing and in the system. 
 This then moves forward into the MovieService file that will display the movie along with its details once the app starts running for the user. Once the system is set up and displayed on the web any user will have the option to look through the selection and choose a movie they would like to see. 
 
 When the application would work when it is on the web.
